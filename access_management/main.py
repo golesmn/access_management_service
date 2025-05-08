@@ -1,12 +1,12 @@
 import json
 import logging
 
-from access_management.repositories.user_repository import UserRepository
-from kafka import KafkaProducer
 from flask import request
+from kafka import KafkaProducer
 
 from access_management.application.services.user_service import UserService
 from access_management.domain.aggregates.user import User
+from access_management.repositories.user_repository import UserRepository
 from shared.infrastructure.db.db import SessionLocal
 from shared.infrastructure.db.uow import UnitOfWork
 from shared.infrastructure.messaging.kafka_producer import KafkaEventDispatcher
@@ -19,7 +19,7 @@ def send_message_kafka(bootstrap_servers: str, topic: str, message: dict):
     try:
         producer = KafkaProducer(
             bootstrap_servers=bootstrap_servers,
-            value_serializer=lambda v: json.dumps(v).encode("utf-8")
+            value_serializer=lambda v: json.dumps(v).encode("utf-8"),
         )
 
         producer.send(topic, message)
@@ -29,13 +29,12 @@ def send_message_kafka(bootstrap_servers: str, topic: str, message: dict):
         logger.error(f"Failed to send message to Kafka: {e}")
 
 
-
 kafka_dispatcher = KafkaEventDispatcher(
     "my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
 )
 
-def main():
 
+def main():
     user_payload = request.get_json()
     uow = UnitOfWork(SessionLocal, kafka_dispatcher)
 
@@ -45,7 +44,8 @@ def main():
     user_service.create_user(user_dto=user)
     uow.register(user)
     uow.commit()
-    return {"message" : "User Created Successfully"}
+    return {"message": "User Created Successfully"}
+
 
 def consumer():
     body = request.get_json()

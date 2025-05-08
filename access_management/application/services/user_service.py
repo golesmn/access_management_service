@@ -1,13 +1,11 @@
-from access_management.infrastructure.models import UserModel
-from access_management.repositories.user_repository import UserRepository
+from sqlalchemy import Boolean, Column, Integer, String
 from sqlalchemy.orm import Session
 from werkzeug.security import generate_password_hash
 
-from sqlalchemy import Column, Integer, String, Boolean
-
 from access_management.domain.aggregates.user import User
+from access_management.infrastructure.models import UserModel
+from access_management.repositories.user_repository import UserRepository
 from shared.infrastructure.db.db import Base, SessionLocal
-from access_management.domain.aggregates.user import User
 
 
 def create_user(user: User) -> User:
