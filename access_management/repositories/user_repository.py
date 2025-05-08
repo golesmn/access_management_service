@@ -1,8 +1,10 @@
 from typing import Optional
 
+from sqlalchemy.orm import Session
+
 from access_management.infrastructure.models import UserModel
 from shared.infrastructure.db.sqlalchemy_repository import SQLAlchemyRepository
-from sqlalchemy.orm import Session
+
 
 class UserRepository(SQLAlchemyRepository[UserModel]):
     def __init__(self, session: Session):

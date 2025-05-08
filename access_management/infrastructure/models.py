@@ -1,9 +1,7 @@
-
-from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy import Boolean, Column, Integer, String
 
 from access_management.domain.aggregates.user import User
 from shared.infrastructure.db.db import Base
-from access_management.domain.aggregates.user import User
 
 
 class UserModel(Base):
