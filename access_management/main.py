@@ -1,15 +1,15 @@
 import json
 import logging
-import sys
 
+from access_management.repositories.user_repository import UserRepository
 from kafka import KafkaProducer
-from access_management.application.commands.create_user import CreateUser
 from flask import request
 
-from access_management.application.services.user_service import create_user
+from access_management.application.services.user_service import UserService
 from access_management.domain.aggregates.user import User
-from access_management.domain.value_objects.email import Email
-from access_management.handlers.user_creation import UserCreationHandler
+from shared.infrastructure.db.db import SessionLocal
+from shared.infrastructure.db.uow import UnitOfWork
+from shared.infrastructure.messaging.kafka_producer import KafkaEventDispatcher
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -29,13 +29,23 @@ def send_message_kafka(bootstrap_servers: str, topic: str, message: dict):
         logger.error(f"Failed to send message to Kafka: {e}")
 
 
-def main():
-    command = CreateUser(address="ktm", name="access")
-    logger.info(f"System paths {sys.path}")
 
-    user = create_user(User(username="suman", password="User1234@", email=Email(value="suman.gole@truenary.com")))
-    send_message_kafka(topic="request-topic", message="user.created", bootstrap_servers="my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092")
-    return {"msg" : user.__dict__}
+kafka_dispatcher = KafkaEventDispatcher(
+    "my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
+)
+
+def main():
+
+    user_payload = request.get_json()
+    uow = UnitOfWork(SessionLocal, kafka_dispatcher)
+
+    user_repo = UserRepository(uow.session)
+    user_service = UserService(user_repo=user_repo)
+    user = User.create(**user_payload)
+    user_service.create_user(user_dto=user)
+    uow.register(user)
+    uow.commit()
+    return {"message" : "User Created Successfully"}
 
 def consumer():
     body = request.get_json()

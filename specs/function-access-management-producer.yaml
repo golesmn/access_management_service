@@ -33,16 +33,16 @@ spec:
   InvokeStrategy:
     ExecutionStrategy:
       ExecutorType: poolmgr
-      MaxScale: 0
-      MinScale: 0
-      SpecializationTimeout: 120
+      MaxScale: 10
+      MinScale: 2
+      SpecializationTimeout: 200
       TargetCPUPercent: 0
     StrategyType: execution
   concurrency: 500
   environment:
     name: python
     namespace: ""
-  functionTimeout: 60
+  functionTimeout: 100
   idletimeout: 120
   package:
     functionName: access_management.main.main
