@@ -6,7 +6,7 @@ from kafka import KafkaProducer
 
 from access_management.application.services.user_service import UserService
 from access_management.domain.aggregates.user import User
-from access_management.repositories.user_repository import UserRepository
+from access_management.infrastructure.repositories.user_repository import UserRepository
 from shared.infrastructure.db.db import SessionLocal
 from shared.infrastructure.db.uow import UnitOfWork
 from shared.infrastructure.messaging.kafka_producer import KafkaEventDispatcher
@@ -44,6 +44,10 @@ def main():
     user_service.create_user(user_dto=user)
     uow.register(user)
     uow.commit()
+    # logger.info(request.full_path)
+    logger.info(request.path)
+    logger.info(f"Headers : {request.headers}")
+    logger.info(request.query_string)
     return {"message": "User Created Successfully"}
 
 

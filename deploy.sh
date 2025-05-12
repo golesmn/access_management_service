@@ -1,4 +1,3 @@
-!/bin/bash
 
 rsync -av $1 $1_pkg
 rsync -av shared $1_pkg
