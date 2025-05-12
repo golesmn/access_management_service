@@ -7,7 +7,7 @@ This repository contains the **Access Management Service**, an independent micro
 
 ## 📁 Project Structure
 
-```
+``` bash
 access_management/
 ├── application/        # Commands and service logic
 ├── domain/             # Aggregates, value objects, domain events
@@ -22,7 +22,7 @@ specs/                  # Fission deployment configs and routes
 
 ---
 
-## 🧠 Design Patterns Used
+## Architecture patterns used
 
 ### Domain-Driven Design (DDD)
 
