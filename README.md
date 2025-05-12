@@ -62,4 +62,8 @@ fission spec apply --specdir specs
 4. Service constructs and persists domain aggregate
 5. Domain event `UserCreated` is dispatched (e.g., to Kafka)
 
+## Deployment
+
+For deployment, go to the shared submodule and check document [running_locally](./shared/docs/running_locally.md) file.
+
 ---
